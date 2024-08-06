@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   db:
+    container_name: db
     image: postgres:13
     environment:
       POSTGRES_DB: transendence
@@ -11,18 +12,15 @@ services:
       DJANGO_SUPERUSER_USERNAME: admin
       DJANGO_SUPERUSER_EMAIL: admin@example.com
       DJANGO_SUPERUSER_PASSWORD: adminpassword
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: always
 
   frontend:
+    container_name: front
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/app
     ports:
       - "3000:3000"
     depends_on:
@@ -30,6 +28,7 @@ services:
     restart: always
 
   web:
+    container_name: web
     build: ./backend
     command: python backend/manage.py runserver 0.0.0.0:8000
     volumes:
@@ -47,12 +46,3 @@ services:
     depends_on:
       - db
     restart: always
-
-
-volumes:
-  postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ../_data
-      o: bind
