@@ -117,6 +117,6 @@ ft_transcendence/
   - `Dockerfile` 및 `docker-compose.yml` 설정
   - 개발 환경 및 배포 환경 설정
 
-import tensorflow.compat.v1 as tf
-tf.enable_eager_execution(tf.ConfigProto(log_device_placement=True))
-print(tf.add([1.0, 2.0], [3.0, 4.0]))
+roina1108@gmail.com
+leenahyun
+loveless11

@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  db:
-    container_name: postgresDB
+  postgres:
+    container_name: postgres
     image: postgres:13
-    build : .
+    build : ./backend
     env_file:
       - .env
     volumes:
