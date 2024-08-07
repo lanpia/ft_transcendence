@@ -110,7 +110,9 @@ function GameLogic({ player1Name, player2Name, onGameEnd }) {
       if (newScore1 >= WINNING_SCORE || newScore2 >= WINNING_SCORE) {
         setGameOver(true);
         setGameStarted(false);
-        onGameEnd(newScore1 >= WINNING_SCORE ? player1Name : player2Name);
+        // onGameEnd(newScore1 >= WINNING_SCORE ? player1Name : player2Name);
+        onGameEnd(newScore1, newScore2, newScore1 >= WINNING_SCORE ? player1Name : player2Name);
+
         return {
           ...prevState,
           ball: { x: 400, y: 200, dx: 0, dy: 0 }, // Stop ball movement

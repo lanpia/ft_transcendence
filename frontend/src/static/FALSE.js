@@ -4,11 +4,11 @@ import GameLogic from './GameLogic';
 function TournamentGame() {
   const [playerNames, setPlayerNames] = useState(['', '', '', '']);
   const [currentMatch, setCurrentMatch] = useState(0);
-  const [winners, setWinners] = useState([]); // Store winner names instead of indices
+  const [winners, setWinners] = useState([]);
   const [tournamentOver, setTournamentOver] = useState(false);
   const [namesEntered, setNamesEntered] = useState(false);
   const [matchEnded, setMatchEnded] = useState(false);
-  const [currentWinner, setCurrentWinner] = useState(null); // Use names instead of indices
+  const [currentWinnerIndex, setCurrentWinnerIndex] = useState(null);
 
   // Define the matches for a simple tournament
   const matches = [
@@ -27,16 +27,17 @@ function TournamentGame() {
     setNamesEntered(true);
   };
 
-  const handleGameEnd = (score1, score2, winnerName) => {
-    setCurrentWinner(winnerName);
+  const handleGameEnd = (winnerIndex) => {
+    // Determine the actual winner's index for the current match
+    const actualWinnerIndex =
+      currentMatch < 2
+        ? matches[currentMatch][winnerIndex] // Direct match
+        : winners[winnerIndex]; // Final match
 
-    // Add the winner's name to the winners array
-    setWinners((prevWinners) => {
-      const updatedWinners = [...prevWinners];
-      updatedWinners[currentMatch] = winnerName; // Update the current match's winner
-      return updatedWinners;
-    });
-    
+    setCurrentWinnerIndex(actualWinnerIndex);
+
+    // Add the actual winner's index to the winners array
+    setWinners((prevWinners) => [...prevWinners, actualWinnerIndex]);
     setMatchEnded(true);
   };
 
@@ -57,22 +58,19 @@ function TournamentGame() {
     setTournamentOver(false);
     setNamesEntered(false);
     setMatchEnded(false);
-    setCurrentWinner(null);
+    setCurrentWinnerIndex(null);
   };
 
   const renderMatch = () => {
-    let player1Name, player2Name;
-
-    // Determine player names based on current match
-    if (currentMatch < 2) {
-      // First two matches
-      player1Name = playerNames[matches[currentMatch][0]];
-      player2Name = playerNames[matches[currentMatch][1]];
-    } else {
-      // Final match
-      player1Name = winners[0]; // Winner of match 1
-      player2Name = winners[1]; // Winner of match 2
-    }
+    const [player1Index, player2Index] = matches[currentMatch];
+    const player1Name =
+      currentMatch < 2
+        ? playerNames[player1Index] // Direct match
+        : playerNames[winners[player1Index]]; // Final match
+    const player2Name =
+      currentMatch < 2
+        ? playerNames[player2Index] // Direct match
+        : playerNames[winners[player2Index]]; // Final match
 
     return (
       <GameLogic
@@ -122,12 +120,12 @@ function TournamentGame() {
         </div>
       ) : tournamentOver ? (
         <div>
-          <h3>Tournament Winner: {winners[winners.length - 1]}</h3>
+          <h3>Tournament Winner: {playerNames[winners[winners.length - 1]]}</h3>
           <button onClick={handleRestartTournament}>Restart Tournament</button>
         </div>
       ) : matchEnded ? (
         <div>
-          <h3>Match Winner: {currentWinner}</h3>
+          <h3>Match Winner: {playerNames[currentWinnerIndex]}</h3>
           <button onClick={handleNextMatch}>Next Match</button>
         </div>
       ) : (
