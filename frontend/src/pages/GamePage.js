@@ -14,12 +14,13 @@ function Game() {
   });
 
   const canvasRef = useRef(null);
-  const player1NameRef = useRef('Player 1');
-  const player2NameRef = useRef('Player 2');
+  const [player1Name, setPlayer1Name] = useState('');
+  const [player2Name, setPlayer2Name] = useState('');
   const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
-    if (gameOver) return;
+    if (gameOver || !gameStarted) return;
 
     const intervalId = setInterval(updateGame, 1000 / 60);
     document.addEventListener('keydown', handleKeyDown);
@@ -28,11 +29,13 @@ function Game() {
       clearInterval(intervalId);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameOver]);
+  }, [gameOver, gameStarted]);
 
   useEffect(() => {
-    renderGame();
-  }, [gameState]);
+    if (gameStarted) {
+      renderGame();
+    }
+  }, [gameState, gameStarted]);
 
   const handleKeyDown = (event) => {
     if (gameOver) return;
@@ -108,6 +111,7 @@ function Game() {
 
       if (newScore1 >= WINNING_SCORE || newScore2 >= WINNING_SCORE) {
         setGameOver(true);
+        setGameStarted(false);
         return {
           ...prevState,
           ball: { x: 400, y: 200, dx: 0, dy: 0 }, // Stop ball movement
@@ -144,12 +148,13 @@ function Game() {
   };
 
   const handleStartGame = () => {
-    const player1Name = prompt('Enter Player 1 Name (WASD):') || 'Player 1';
-    const player2Name = prompt('Enter Player 2 Name (Arrow Keys):') || 'Player 2';
+    if (player1Name.trim() === '' || player2Name.trim() === '') {
+      alert('Please enter names for both players.');
+      return;
+    }
 
-    player1NameRef.current = player1Name;
-    player2NameRef.current = player2Name;
     setGameOver(false);
+    setGameStarted(true);
 
     // Reset game state
     setGameState({
@@ -163,30 +168,46 @@ function Game() {
 
   return (
     <div>
+      {!gameStarted && (
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <input
+            type="text"
+            placeholder="Player 1 Name (WASD)"
+            value={player1Name}
+            onChange={(e) => setPlayer1Name(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Player 2 Name (Arrow Keys)"
+            value={player2Name}
+            onChange={(e) => setPlayer2Name(e.target.value)}
+          />
+          <button onClick={handleStartGame}>Start Game</button>
+        </div>
+      )}
       {gameOver && (
         <div>
           <h3>
             {gameState.score1 >= WINNING_SCORE
-              ? `${player1NameRef.current} Wins!`
-              : `${player2NameRef.current} Wins!`}
+              ? `${player1Name} Wins!`
+              : `${player2Name} Wins!`}
           </h3>
           <button onClick={handleStartGame}>Restart Game</button>
         </div>
       )}
-      <button onClick={handleStartGame}>Start Game</button>
       <canvas
         ref={canvasRef}
         width="800"
         height="400"
-        style={{ display: 'block', margin: '0 auto', background: '#eee' }}
+        style={{ display: gameStarted ? 'block' : 'none', margin: '0 auto', background: '#eee' }}
       />
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
         <span id="score1">
-          {player1NameRef.current} ({gameState.score1})
+          {player1Name} ({gameState.score1})
         </span>{' '}
         -{' '}
         <span id="score2">
-          {player2NameRef.current} ({gameState.score2})
+          {player2Name} ({gameState.score2})
         </span>
       </div>
     </div>
