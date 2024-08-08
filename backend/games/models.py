@@ -21,3 +21,10 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game {self.id} - {self.player1} vs {self.player2}"
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=100)
+    games = models.ManyToManyField(Game)
+
+    def __str__(self):
+        return self.name

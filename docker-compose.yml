@@ -24,17 +24,14 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - web
+      - back
     restart: always
     networks:
       - mynetwork
 
-  web:
+  back:
     container_name: back
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
     ports:
       - "8000:8000"
     environment:

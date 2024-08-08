@@ -17,5 +17,6 @@ ENV PYTHONUNBUFFERED=1
 # ENTRYPOINT와 CMD로 스크립트 실행
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
-CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["/entrypoint.sh"]
+# CMD ["tail", "-f", "/dev/null"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
