@@ -19,7 +19,7 @@ function OneOnOneGame() {
     setGameStarted(true);
   };
 
-  const handleGameEnd = (winnerName) => {
+  const handleGameEnd = (score1, score2, winnerName) => {
     setGameOver(true);
     setGameStarted(false);
     setWinner(winnerName);

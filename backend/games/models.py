@@ -9,7 +9,6 @@ class Game(models.Model):
     status = models.CharField(max_length=10, choices=[('ongoing', 'Ongoing'), ('completed', 'Completed')])
 
     def save(self, *args, **kwargs):
-        # 게임이 완료된 경우 승리 횟수 업데이트
         if self.status == 'completed':
             if self.score1 > self.score2:
                 self.player1.wins += 1
@@ -24,7 +23,8 @@ class Game(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(max_length=100)
-    games = models.ManyToManyField(Game)
+    # participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='tournaments')
+    # winner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='won_tournaments', null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name

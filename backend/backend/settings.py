@@ -19,7 +19,9 @@ SECRET_KEY = 'django-insecure-<your-secret-key>'
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 
 # Application definition
@@ -30,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'rest_framework',
+    'drf_yasg',
     'users',
     'games',
 ]
@@ -74,8 +78,8 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': 'db',  # Docker Compose 서비스 이름
-        'PORT': '5432',
+        'HOST': os.getenv('POSTGRES_HOST'),  # Docker Compose 서비스 이름
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
